@@ -1,0 +1,32 @@
+$def with (tplData)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>OICQ 聊天室 </title>
+<link rel="stylesheet" media="screen" href="$:tplData['static']/css/style.css" />
+<script type="text/javascript">
+var root = "$:tplData['root']";
+</script>
+</head>
+
+<form id="msform">
+	<br /><br />
+	<!-- fieldsets -->
+	<fieldset>
+		<h2 class="fs-title">登录</h2>
+		<h3 class="fs-subtitle">输入用户名和密码，第一次登录自动创建账户</h3>
+		<input type="text" id="name" name="name" placeholder="Username" />
+		<input type="password" id="pass" name="pass" placeholder="Password" />
+		<input type="button" name="next" class="next action-button" value="Next" />
+	</fieldset>
+</form>
+
+
+<script type="text/javascript" src="$:tplData['static']/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="$:tplData['static']/js/jquery.easing.min.js"></script>
+<script type="text/javascript" src="$:tplData['static']/js/script.js"></script>
+ 
+ 
+</body>
+</html>
