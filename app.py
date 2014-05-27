@@ -2,28 +2,21 @@
 #coding=utf-8
 __author__ = 'Phtih0n'
 import web, json, time
+from setting import *
 from hashlib import md5
 
-# 数据库
-database = 'db/irc.db3'
-db = web.database(dbn='sqlite', db='db/oicq.db3')
-# 路径
-root_site = 'http://localhost:81/'
-
-urls = (
-    '/msg/?', 'msg',
-    '/login(/quit|/)?', 'login',
-    '/log/?', 'log',
-    '.*', 'show'
-)
+db = web.database(dbn = 'sqlite', db = database)
 
 class base:
     def __init__(self):
+        global root_site
         self.tplData = {}
         self.globalsTplFuncs = {}
         self.initCommonTplFunc()
         self.assign('root', root_site)
         self.assign('static', root_site + 'static')
+        if "" == root_site:
+            root_site = "%s://%s/" % (web.ctx.protocol, web.ctx.host)
 
     def initCommonTplFunc(self):
         subStr=lambda strings,offset,length : self.subText(strings,offset,length)
@@ -69,15 +62,15 @@ class base:
         else:
             self.tplData[key] = value
 
-    def display(self,tplName):
-        self.tplData['render'] = web.template.render('templates',globals=self.globalsTplFuncs)
+    def display(self, tplName):
+        self.tplData['render'] = web.template.render('templates', globals = self.globalsTplFuncs)
         return getattr(self.tplData['render'], tplName)(self.tplData)
 
 class log(base):
     def __init__(self):
         base.__init__(self)
         if not self.is_login():
-            raise web.seeother('../login')
+            raise web.seeother('/login')
 
     def GET(self):
         lasttime = web.ctx.session.lasttime
