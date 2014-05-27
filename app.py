@@ -128,7 +128,7 @@ class msg(base):
         })
         lst = []
         for l in msg:
-            l['time'] = time.strftime("%H:%M:%S", time.gmtime(l['time'] + 28800))
+            l['time'] = time.strftime("%H:%M:%S", time.gmtime(l['time'] + time_zone * 3600))
             lst.append(l)
         return lst
 

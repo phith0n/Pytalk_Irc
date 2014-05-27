@@ -15,3 +15,6 @@ urls = (
     '/log/?', 'log',
     '.*', 'show'
 )
+
+# 时区
+time_zone = 8
