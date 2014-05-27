@@ -18,3 +18,9 @@ urls = (
 
 # 时区
 time_zone = 8
+
+# cookie设置
+pytalk_cookie = {
+    'save_cookie_seconds': 86400,
+    'secret_key': 'kO9ai2jNXxMjSk1i6xT'
+}
