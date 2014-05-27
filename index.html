@@ -31,22 +31,93 @@
           <h2>
 <a name="welcome-to-pytalk-irc-pages" class="anchor" href="#welcome-to-pytalk-irc-pages"><span class="octicon octicon-link"></span></a>Welcome to PyTalk Irc Pages</h2>
 
-<p>pytalk_irc 是一个基于web.py的在线IRC系统，用户可以在线聊天。</p>
-
-<p>版本：v1.0 release 20140527</p>
+<p>pytalk_irc 是一个基于web.py的在线IRC系统，用户可以在线聊天。
+版本：v1.2 release 20140527</p>
 
 <h3>
+<a name="feature" class="anchor" href="#feature"><span class="octicon octicon-link"></span></a>Feature</h3>
+
+<ol>
+<li>基于web.py框架，简单实用，自定端口，可独立于80端口其他web服务而运行。代码纯python2编写，易于二次开发</li>
+<li>使用sqlite轻型数据库，不需要任何第三方服务，能在vps上一键运行</li>
+<li>界面清新，前端基于HTML5规范编写</li>
+<li>利用 ajax 轮询查询数据，实时与朋友进行聊天</li>
+<li>用户只能看到本次自己登录时间内的所有聊天记录，最大程度上避免产生</li>
+</ol><h3>
+<a name="weaknessfix" class="anchor" href="#weaknessfix"><span class="octicon octicon-link"></span></a>Weakness(fix)</h3>
+
+<ol>
+<li>通信过程未加密，将会在之后的版本进行修改</li>
+<li>用户登录、注册未使用验证码，存在用户密码被碰撞的危险</li>
+<li>暂不支持https，将在之后的版本加入</li>
+<li>用户不能修改密码，首次登陆的密码作为用户今后的密码</li>
+</ol><h3>
 <a name="startup" class="anchor" href="#startup"><span class="octicon octicon-link"></span></a>Startup</h3>
 
-<p>app将在81端口运行：</p>
+<p>使用前需安装web.py库，安装方式（详见 <a href="http://webpy.org/">http://webpy.org/</a> ）：</p>
+
+<pre><code>sudo easy_install web.py
+</code></pre>
+
+<p>pytalk 将在81端口运行（默认8080端口）：</p>
 
 <pre><code># python ./app.py 81
 </code></pre>
 
 <p>vps用户可以使用nohup，将app.py作为守护进程运行：</p>
 
-<pre><code># nohup python ./app.py 81
+<pre><code># nohup python ./app.py 81 
 </code></pre>
+
+<h3>
+<a name="document" class="anchor" href="#document"><span class="octicon octicon-link"></span></a>Document</h3>
+
+<p>pytalk基于python web框架web.py，程序入口点app.py，所有配置文件在setting.py中。
+setting设置如下：</p>
+
+<ul>
+<li>
+<strong>database</strong> 数据库地址，默认 "db/pytalk.db3"</li>
+<li>
+<strong>root_site</strong> 网址，默认为空。root_site为空时自动取用户访问时输入的值，可能存在潜在的安全问题。
+
+<ul>
+<li>带端口号，写作"http://yoursite:port/"，如"<a href="http://www.qq.com:8080/">http://www.qq.com:8080/</a>"</li>
+<li>端口号即为运行app.py时输入的端口号，否则不能正常显示</li>
+</ul>
+</li>
+<li>
+<strong>urls</strong> url规则，作为pytalk最重要的控制器部分，请勿随意更改。如有需要更改，请参照web.py文档中的url规则进行修改</li>
+<li>
+<strong>time_zone</strong> 时区设置，默认为+8区，聊天时时间即为北京时间</li>
+<li>
+<strong>pytalk_cookie</strong> session设置，session作为pytalk中识别不同用户的唯一标志，十分重要。该字典有如下项：
+
+<ul>
+<li>save_cookie_seconds，session保存时间（秒），默认为24小时。</li>
+<li>secret_key，重要！session加密字符串，请不要使用默认字符串，尽量进行修改，避免产生潜在的安全问题</li>
+</ul>
+</li>
+</ul><h3>
+<a name="referer" class="anchor" href="#referer"><span class="octicon octicon-link"></span></a>Referer</h3>
+
+<ul>
+<li>Web.py - <a href="http://webpy.org/">http://webpy.org/</a>
+</li>
+<li>Webpycms - <a href="https://github.com/taogogo/webpyCMS">https://github.com/taogogo/webpyCMS</a>
+</li>
+</ul><h3>
+<a name="thanks" class="anchor" href="#thanks"><span class="octicon octicon-link"></span></a>Thanks</h3>
+
+<ul>
+<li>Aaron Swartz 向你致敬</li>
+</ul><h3>
+<a name="contributors" class="anchor" href="#contributors"><span class="octicon octicon-link"></span></a>Contributors</h3>
+
+<ul>
+<li>
+<a href="http://www.leavesongs.com">Phithon</a> - 努力追逐大牛的小白</li>
+</ul>
         </section>
 
         <aside id="sidebar">
