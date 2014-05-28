@@ -33,7 +33,7 @@
 
 <p>pytalk_irc 是一个基于web.py的在线IRC系统，用户可以在线聊天。</p>
 
-<p>版本：v1.2 release 20140527</p>
+<p>版本：v1.5.1 release 20140527</p>
 
 <h3>
 <a name="feature" class="anchor" href="#feature"><span class="octicon octicon-link"></span></a>Feature</h3>
@@ -44,6 +44,7 @@
 <li>界面清新，前端基于HTML5规范编写</li>
 <li>利用 ajax 轮询查询数据，实时与朋友进行聊天</li>
 <li>用户只能看到本次自己登录时间内的所有聊天记录，最大程度上避免产生越权操作</li>
+<li>用户能够共享文件、图片，发送消息时系统会自动识别超链接</li>
 </ol><h3>
 <a name="weaknessfix" class="anchor" href="#weaknessfix"><span class="octicon octicon-link"></span></a>Weakness(fix)</h3>
 
@@ -52,7 +53,6 @@
 <li>用户登录、注册未使用验证码，存在用户密码被碰撞的危险</li>
 <li>暂不支持https，将在之后的版本加入</li>
 <li>用户不能修改密码，首次登陆的密码作为用户今后的密码</li>
-<li>暂时不能传文件、发表情，将在最近一个版本增加功能</li>
 </ol><h3>
 <a name="startup" class="anchor" href="#startup"><span class="octicon octicon-link"></span></a>Startup</h3>
 
@@ -105,6 +105,34 @@ setting设置如下：</p>
 <ul>
 <li>save_cookie_seconds，session保存时间（秒），默认为24小时。</li>
 <li>secret_key，重要！session加密字符串，请不要使用默认字符串，尽量进行修改，避免产生潜在的安全问题</li>
+</ul>
+</li>
+<li>
+<strong>upload_dir</strong> 上传文件夹名，默认为"upfile"。用户共享文件时默认将上传的文件放在/static/upfile内</li>
+<li>
+<strong>upload_max_size</strong> 上传最大大小，单位：字节</li>
+</ul><h3>
+<a name="update-log" class="anchor" href="#update-log"><span class="octicon octicon-link"></span></a>Update Log</h3>
+
+<ul>
+<li>v1.2.0
+
+<ul>
+<li>稳定版本发布</li>
+</ul>
+</li>
+<li>v1.5.0 
+
+<ul>
+<li>增加文件、图片共享功能</li>
+<li>增加url自动识别，系统自动识别用户所发送信息中的url</li>
+<li>修复一些用户体验方面的BUG</li>
+</ul>
+</li>
+<li>v1.5.1
+
+<ul>
+<li>修复一个BUG：当消息过长时，可能会卡住系统。此版本中在前后端限制了信息长度最长为128个字符(所有字符包括汉字均为1字符)</li>
 </ul>
 </li>
 </ul><h3>
