@@ -16,6 +16,10 @@ $("#send").click(function(){
 	if (! sendbox || $("#sendbox").get(0).disabled) {
 		return ;
 	};
+	if (sendbox.length > 128) {
+		alert("太长啦，分多条发送吧~");
+		return ;
+	};
 	$.post(root + "msg/", {
 		'msg': sendbox, 
 		'formhash': $("#formhash").val()

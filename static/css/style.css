@@ -146,6 +146,8 @@ body {
 	overflow: auto;
 	text-align: start;
 	margin-left: 5.5%;
+	word-break:break-all; /*支持IE，chrome，FF不支持*/
+　　word-wrap:break-word;/*支持IE，chrome，FF*/
 }
 /*buttons*/
 #talk .action-button {

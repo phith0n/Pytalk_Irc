@@ -112,7 +112,7 @@ class upload(base):
             })
         if 'upfile' in data:
             # 处理上传文件
-            filename = self.safechar(data['upfile'].filename)
+            filename = self.safechar(data['upfile'].filename[0: 256])
             (_, onlyname) = os.path.split(filename)
             (_, ext) = os.path.splitext(filename)
             filename = 'static/%s/%s' % (upload_dir, self.__rename(ext))
@@ -166,6 +166,7 @@ class msg(base):
         data = web.input()
         msg = data['msg'].replace('\n', ' ').strip()
         msg = self.htmlspecialchar(msg)
+        msg = msg[0: 128]
         uname = web.ctx.session.uname
 
         # 检查formhash，防止CSRF
