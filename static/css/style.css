@@ -132,19 +132,20 @@ body {
 	font-size: 13px;
 	resize: none;
 }
-#talk textarea.fs-showtalk {
+#talk .fs-showtalk {
 	padding: 10px;
 	border: 1px solid #ccc;
 	border-radius: 1px;
 	margin-bottom: 10px;
 	width:89%;
-	height: 300px;
+	height: 280px;
 	box-sizing: border-box;
 	font-family: montserrat;
 	color: #2C3E50;
 	font-size: 13px;
-	resize: none;
-	overflow: hidden;
+	overflow: auto;
+	text-align: start;
+	margin-left: 5.5%;
 }
 /*buttons*/
 #talk .action-button {
@@ -160,4 +161,7 @@ body {
 }
 #talk .action-button:hover, #talk .action-button:focus {
 	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+#talk .small-btn {
+	width: 80px;
 }

@@ -13,6 +13,7 @@ urls = (
     '/msg/?', 'msg',
     '/login(/quit|/)?', 'login',
     '/log/?', 'log',
+    '/file/?', 'upload',
     '.*', 'show'
 )
 
@@ -22,5 +23,11 @@ time_zone = 8
 # cookie设置
 pytalk_cookie = {
     'save_cookie_seconds': 86400,
-    'secret_key': 'kO9ai2jNXxMjSk1i6xT'
+    'secret_key': 'kOlai1jnXPMj9k1i6xT'
 }
+
+# 上传文件夹
+upload_dir = 'upfile'
+
+# 上传文件最大尺寸
+upload_max_size = 1 * 1024 * 1024

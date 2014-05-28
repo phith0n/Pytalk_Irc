@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 __author__ = 'Phtih0n'
-import web, json, time
+import web, json, time, random, re, string
 from setting import *
 from hashlib import md5
 
@@ -33,10 +33,17 @@ class base:
         m.update(str)
         return m.hexdigest()
 
-    def htmlspecialchars(self, txt):
+    def safechar(self, txt):
+        return txt.replace("<", "").replace(">", "")\
+            .replace("&", "").replace('"', "")\
+            .replace("'", "")
+
+    def htmlspecialchar(self, txt):
         return txt.replace("<", "&lt;").replace(">", "&gt;")\
-            .replace("&", "&amp;").replace('"', "&quot;")\
-            .replace("'", "&#39;")
+            .replace('"', "&quot;").replace("'", "&#039;")
+
+    def randStr(self, len = 8):
+        return ''.join(random.sample(string.ascii_letters + string.digits, len))
 
     def subText(self,strings,offset,length):
         return self.strip_tags(strings)[offset:length]
@@ -75,14 +82,72 @@ class log(base):
     def GET(self):
         lasttime = web.ctx.session.lasttime
         nowtime = int(time.time())
-        rs = db.query("SELECT * FROM `msg` WHERE `time` > $lt AND `time` < $nt ORDER BY `time` DESC", vars = {
+        rs = list(db.query("SELECT * FROM `msg` WHERE `time` > $lt AND `time` < $nt ORDER BY `time` DESC", vars = {
             'lt': lasttime,
             'nt': nowtime
-        })
+        }))
         return self.showJson({
             'num': 0,
-            'msg': [l for l in rs]
+            'msg': rs
         })
+
+class upload(base):
+    def __init__(self):
+        base.__init__(self)
+        if not self.is_login():
+            raise web.seeother('/login')
+
+    def __rename(self, ext):
+        return "%d_%d%s" % (time.time(), random.randint(0, 65535), ext)
+
+    def POST(self):
+        import os, cgi
+        cgi.maxlen = upload_max_size
+        try:
+            data = web.input(upfile = {})
+        except:
+            return self.showJson({
+                'num': 2,
+                'msg': '文件最大不超过%sK' % int(upload_max_size / 1024)
+            })
+        if 'upfile' in data:
+            # 处理上传文件
+            filename = self.safechar(data['upfile'].filename)
+            (_, onlyname) = os.path.split(filename)
+            (_, ext) = os.path.splitext(filename)
+            filename = 'static/%s/%s' % (upload_dir, self.__rename(ext))
+            with open(filename, 'wb') as fout:
+                fout.write(data['upfile'].file.read())
+
+            # 作为新消息插入数据库
+            filename = root_site + filename
+            if ext in ('.jpg', '.gif', '.png', '.bmp'):
+                msg = u'分享了 <a class="fancybox" href="javascript:;" ' \
+                      u'title="%s" onclick="return showimg(this);">图片-%s</a>' % (filename, onlyname)
+            else:
+                msg = u'<span>分享了文件 <a href="%s" target="_blank">%s</a></span>' % (filename, onlyname)
+            uname = web.ctx.session.uname
+            try:
+                db.query("INSERT INTO `msg`(`msg`, `uname`, `time`) VALUES($m, $u, $t)", vars = {
+                    'm': msg,
+                    'u': uname,
+                    't': int(time.time())
+                })
+                return self.showJson({
+                    'num': 0,
+                    'msg': "上传成功",
+                    'dir': filename
+                })
+            except:
+                return self.showJson({
+                    'num': 3,
+                    'msg': '发送文件失败'
+                })
+        else:
+            return self.showJson({
+                'num': 1,
+                'msg': '没有选择要上传的文件'
+            })
 
 class msg(base):
     def __init__(self):
@@ -100,7 +165,22 @@ class msg(base):
     def POST(self):
         data = web.input()
         msg = data['msg'].replace('\n', ' ').strip()
+        msg = self.htmlspecialchar(msg)
         uname = web.ctx.session.uname
+
+        # 检查formhash，防止CSRF
+        try:
+            assert data['formhash'] == web.ctx.session.formhash
+        except:
+            return self.showJson({
+                'num': -1,
+                'msg': 'Permission Deny'
+            })
+
+        # 处理超链接
+        msg = self.__href(msg)
+
+        #插入数据库
         try:
             db.query("INSERT INTO `msg`(`msg`, `uname`, `time`) VALUES($m, $u, $t)", vars = {
                 'm': msg,
@@ -117,6 +197,10 @@ class msg(base):
                 'num': 1,
                 'msg': '发表错误'
             })
+
+    def __href(self, msg):
+        (ret, _) = re.subn(r'(https?://[^"\'\s]*)', '<a href="\\1" target="_blank">\\1</a>', msg)
+        return ret
 
     def __getmsg(self):
         begin = 0
@@ -141,7 +225,7 @@ class login(base):
         post = web.input()
         name = post['name']
         passwd = self.md5(post['pass'])
-        res = db.query("SELECT * FROM `user` WHERE `user` = $u AND 1=1", vars = {
+        res = db.query("SELECT * FROM `user` WHERE `user` = $u", vars = {
             'u': name
         })
         try:
@@ -160,6 +244,7 @@ class login(base):
                 web.ctx.session.login = True
                 web.ctx.session.lasttime = lasttime
                 web.ctx.session.uname = user['user']
+                web.ctx.session.formhash = self.randStr()
                 return self.showJson({
                     'num': 0,
                     'msg': u'登录成功'
@@ -183,7 +268,7 @@ class login(base):
                     't': lasttime
                 })
             except Exception, e:
-                print Exception,":",e
+                # print Exception,":",e
                 return self.showJson({
                     'num': 2,
                     'msg': u'用户名已被占用'
@@ -192,6 +277,7 @@ class login(base):
                 web.ctx.session.login = True
                 web.ctx.session.uname = name
                 web.ctx.session.lasttime = lasttime
+                web.ctx.session.formhash = self.randStr()
                 return self.showJson({
                     'num': 0,
                     'msg': u'注册成功'
@@ -207,6 +293,7 @@ class login(base):
             web.ctx.session.login = False
             web.ctx.session.uname = ''
             web.ctx.session.uid = 0
+            web.ctx.session.formhash = ''
         return self.display('login')
 
 class show(base):
@@ -217,6 +304,7 @@ class show(base):
         if web.ctx.session.login == True:
             self.assign('name', web.ctx.session.uname)
             self.assign('ipaddr', web.ctx.ip)
+            self.assign('formhash', web.ctx.session.formhash)
             return self.display('show')
         else:
             web.seeother('/login/')
