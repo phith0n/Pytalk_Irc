@@ -115,7 +115,7 @@ class upload(base):
             filename = self.safechar(data['upfile'].filename[0: 256])
             (_, onlyname) = os.path.split(filename)
             (_, ext) = os.path.splitext(filename)
-            filename = 'static/%s/%s' % (upload_dir, self.__rename(ext))
+            filename = u'static/%s/%s' % (upload_dir, self.__rename(ext))
             with open(filename, 'wb') as fout:
                 fout.write(data['upfile'].file.read())
 
@@ -123,9 +123,14 @@ class upload(base):
             filename = root_site + filename
             if ext in ('.jpg', '.gif', '.png', '.bmp'):
                 msg = u'分享了 <a class="fancybox" href="javascript:;" ' \
-                      u'title="%s" onclick="return showimg(this);">图片-%s</a>' % (filename, onlyname)
+                      u'title="%s" onclick="return showimg(this);">图片-%s</a>' % (filename, onlyname.decode('utf8'))
+            elif ext in ('.rar', '.zip', '.tar', '.gz', '.doc', '.pdf', '.exe', '.wps', '.txt', '.xls'):
+                msg = u'<span>分享了文件 <a href="%s" target="_blank">%s</a></span>' % (filename, onlyname.decode('utf8'))
             else:
-                msg = u'<span>分享了文件 <a href="%s" target="_blank">%s</a></span>' % (filename, onlyname)
+                return self.showJson({
+                    'num': 4,
+                    'msg': '非法文件格式'
+                })
             uname = web.ctx.session.uname
             try:
                 db.query("INSERT INTO `msg`(`msg`, `uname`, `time`) VALUES($m, $u, $t)", vars = {
