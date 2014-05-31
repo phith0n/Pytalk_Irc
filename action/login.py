@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 __author__ = 'Phtih0n'
-import web, time
+import time
 from action.base import base
 from setting import *
 
@@ -11,7 +11,7 @@ class login(base):
 
     def POST(self, _ = ''):
         post = web.input()
-        name = post['name']
+        name = self.htmlspecialchar(post['name'])
         passwd = self.md5(post['pass'])
         res = self.db.query("SELECT * FROM `user` WHERE `user` = $u", vars = {
             'u': name

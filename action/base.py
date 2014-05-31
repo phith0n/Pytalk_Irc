@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 __author__ = 'Phtih0n'
-import web, random, json, string
+import random, json, string
 from setting import *
 from hashlib import md5
 

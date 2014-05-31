@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 __author__ = 'Phtih0n'
-import web, time
+import time
 from action.base import base
 from setting import *
 
