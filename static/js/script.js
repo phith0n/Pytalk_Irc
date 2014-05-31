@@ -24,7 +24,7 @@ $(".next").click(function(){
 			animating = false;
 			$.post(root + 'login/', {
 				'name': $("#name").val(), 
-				'pass': $("#pass").val()
+				'pass': hex_md5($("#pass").val())
 			}, function(data){
 				var json = eval('(' + data + ')');
 				if (json['num'] !== 0) {
